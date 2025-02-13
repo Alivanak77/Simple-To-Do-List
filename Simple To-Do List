@@ -1,0 +1,17 @@
+# Simple To-Do List - Day 1
+
+tasks = []
+
+def add_task(task):
+    tasks.append(task)
+    print(f"Added: {task}")
+
+def show_tasks():
+    print("\nTo-Do List:")
+    for idx, task in enumerate(tasks, start=1):
+        print(f"{idx}. {task}")
+
+# تست اولیه
+add_task("Finish GitHub project")
+add_task("Read 10 pages of a book")
+show_tasks()

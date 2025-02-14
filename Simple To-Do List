@@ -1,4 +1,4 @@
-# Simple To-Do List - Day 1
+# Simple To-Do List - Day 2
 
 tasks = []
 
@@ -7,11 +7,19 @@ def add_task(task):
     print(f"Added: {task}")
 
 def show_tasks():
+    if not tasks:
+        print("\nTo-Do List is empty!")
+        return
+
     print("\nTo-Do List:")
     for idx, task in enumerate(tasks, start=1):
         print(f"{idx}. {task}")
 
-# تست اولیه
-add_task("Finish GitHub project")
-add_task("Read 10 pages of a book")
-show_tasks()
+def remove_task(index):
+    try:
+        index = int(index) - 1
+        if 0 <= index < len(tasks):
+            removed = tasks.pop(index)
+            print(f"Removed: {removed}")
+        else:
+            print("I

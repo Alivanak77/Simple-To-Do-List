@@ -1,9 +1,25 @@
-# Simple To-Do List - Day 2
+# Simple To-Do List - Day 3
 
 tasks = []
 
+# بارگذاری تسک‌ها از فایل
+def load_tasks():
+    try:
+        with open("tasks.txt", "r") as file:
+            global tasks
+            tasks = [line.strip() for line in file.readlines()]
+    except FileNotFoundError:
+        tasks = []
+
+# ذخیره تسک‌ها در فایل
+def save_tasks():
+    with open("tasks.txt", "w") as file:
+        for task in tasks:
+            file.write(task + "\n")
+
 def add_task(task):
     tasks.append(task)
+    save_tasks()
     print(f"Added: {task}")
 
 def show_tasks():
@@ -20,6 +36,18 @@ def remove_task(index):
         index = int(index) - 1
         if 0 <= index < len(tasks):
             removed = tasks.pop(index)
+            save_tasks()
             print(f"Removed: {removed}")
         else:
-            print("I
+            print("Invalid task number!")
+    except ValueError:
+        print("Please enter a valid number!")
+
+# اجرای اولیه
+load_tasks()
+add_task("Start new GitHub project")
+add_task("Learn Python OOP")
+show_tasks()
+
+remove_task(1)
+show_tasks()

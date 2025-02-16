@@ -1,4 +1,4 @@
-# Simple To-Do List - Day 3
+# Simple To-Do List - Day 4
 
 tasks = []
 
@@ -43,11 +43,24 @@ def remove_task(index):
     except ValueError:
         print("Please enter a valid number!")
 
+def edit_task(index, new_task):
+    try:
+        index = int(index) - 1
+        if 0 <= index < len(tasks):
+            old_task = tasks[index]
+            tasks[index] = new_task
+            save_tasks()
+            print(f"Edited: '{old_task}' → '{new_task}'")
+        else:
+            print("Invalid task number!")
+    except ValueError:
+        print("Please enter a valid number!")
+
 # اجرای اولیه
 load_tasks()
 add_task("Start new GitHub project")
 add_task("Learn Python OOP")
 show_tasks()
 
-remove_task(1)
+edit_task(2, "Learn Python Decorators")
 show_tasks()

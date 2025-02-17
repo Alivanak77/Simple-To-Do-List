@@ -47,10 +47,9 @@ def edit_task(index, new_task):
     try:
         index = int(index) - 1
         if 0 <= index < len(tasks):
-            old_task = tasks[index]
             tasks[index] = new_task
             save_tasks()
-            print(f"Edited: '{old_task}' → '{new_task}'")
+            print(f"Task updated: {new_task}")
         else:
             print("Invalid task number!")
     except ValueError:
@@ -58,9 +57,9 @@ def edit_task(index, new_task):
 
 # اجرای اولیه
 load_tasks()
-add_task("Start new GitHub project")
-add_task("Learn Python OOP")
+add_task("Refactor GitHub project")
+add_task("Practice coding")
 show_tasks()
 
-edit_task(2, "Learn Python Decorators")
+edit_task(2, "Complete Python project")
 show_tasks()

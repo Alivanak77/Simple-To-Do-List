@@ -63,3 +63,39 @@ show_tasks()
 
 edit_task(2, "Complete Python project")
 show_tasks()
+from datetime import datetime
+
+tasks = []
+
+def load_tasks():
+    try:
+        with open("tasks.txt", "r") as file:
+            global tasks
+            tasks = [line.strip() for line in file.readlines()]
+    except FileNotFoundError:
+        tasks = []
+
+def save_tasks():
+    with open("tasks.txt", "w") as file:
+        for task in tasks:
+            file.write(task + "\n")
+
+def add_task(task):
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    task_with_time = f"{task} (added: {timestamp})"
+    tasks.append(task_with_time)
+    save_tasks()
+    print(f"Added: {task_with_time}")
+
+def show_tasks():
+    if not tasks:
+        print("\nTo-Do List is empty!")
+        return
+    print("\nTo-Do List:")
+    for idx, task in enumerate(tasks, start=1):
+        print(f"{idx}. {task}")
+
+# اجرا
+load_tasks()
+add_task("Start new side project")
+show_tasks()

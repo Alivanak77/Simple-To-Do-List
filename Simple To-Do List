@@ -99,3 +99,50 @@ def show_tasks():
 load_tasks()
 add_task("Start new side project")
 show_tasks()
+tasks = {}
+
+def load_tasks():
+    try:
+        with open("tasks.txt", "r") as file:
+            global tasks
+            tasks = {line.split(" | ")[0]: line.strip().split(" | ")[1] for line in file.readlines()}
+    except FileNotFoundError:
+        tasks = {}
+
+def save_tasks():
+    with open("tasks.txt", "w") as file:
+        for task, status in tasks.items():
+            file.write(f"{task} | {status}\n")
+
+def add_task(task):
+    tasks[task] = "❌ Not Done"
+    save_tasks()
+    print(f"Added: {task}")
+
+def show_tasks():
+    if not tasks:
+        print("\nTo-Do List is empty!")
+        return
+    print("\nTo-Do List:")
+    for idx, (task, status) in enumerate(tasks.items(), start=1):
+        print(f"{idx}. {task} - {status}")
+
+def toggle_task(index):
+    task_list = list(tasks.keys())
+    if 0 <= index - 1 < len(task_list):
+        task = task_list[index - 1]
+        tasks[task] = "✅ Done" if tasks[task] == "❌ Not Done" else "❌ Not Done"
+        save_tasks()
+        print(f"Updated: {task} -> {tasks[task]}")
+    else:
+        print("Invalid task number!")
+
+# اجرا
+load_tasks()
+add_task("Learn Python")
+add_task("Build a project")
+show_tasks()
+
+toggle_task(1)
+show_tasks()
+

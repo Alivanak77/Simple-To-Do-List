@@ -192,3 +192,33 @@ show_tasks()
 
 remove_tasks([1, 3])
 show_tasks()
+import os
+import platform
+import time
+
+tasks = []
+
+def play_sound():
+    if platform.system() == "Windows":
+        import winsound
+        winsound.Beep(1000, 500)
+    else:
+        os.system("afplay /System/Library/Sounds/Glass.aiff" if platform.system() == "Darwin" else "echo -e '\a'")
+
+def add_task(task):
+    tasks.append(task)
+    play_sound()
+    print(f"Added: {task}")
+
+def show_tasks():
+    if not tasks:
+        print("\nTo-Do List is empty!")
+        return
+    print("\nTo-Do List:")
+    for idx, task in enumerate(tasks, start=1):
+        print(f"{idx}. {task}")
+
+# اجرا
+add_task("Finish homework")
+add_task("Go grocery shopping")
+show_tasks()

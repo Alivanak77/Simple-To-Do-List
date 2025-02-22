@@ -222,3 +222,32 @@ def show_tasks():
 add_task("Finish homework")
 add_task("Go grocery shopping")
 show_tasks()
+import time
+import threading
+
+tasks = []
+
+def add_task(task, reminder_time):
+    tasks.append((task, reminder_time))
+    print(f"Added: {task} (Reminder in {reminder_time} seconds)")
+    threading.Thread(target=reminder, args=(task, reminder_time)).start()
+
+def reminder(task, reminder_time):
+    time.sleep(reminder_time)
+    print(f"⏰ Reminder: {task}")
+
+def show_tasks():
+    if not tasks:
+        print("\nTo-Do List is empty!")
+        return
+    print("\nTo-Do List:")
+    for idx, (task, reminder_time) in enumerate(tasks, start=1):
+        print(f"{idx}. {task} (in {reminder_time} seconds)")
+
+# تست
+add_task("Submit project", 5)
+add_task("Call friend", 10)
+show_tasks()
+
+# جلوگیری از بسته شدن برنامه تا زمان یادآوری
+time.sleep(15)

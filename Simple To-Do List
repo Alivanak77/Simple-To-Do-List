@@ -251,3 +251,23 @@ show_tasks()
 
 # جلوگیری از بسته شدن برنامه تا زمان یادآوری
 time.sleep(15)
+from datetime import datetime
+
+tasks = []
+
+def add_task(task, due_date):
+    tasks.append((task, due_date))
+    print(f"Added: {task} (Due: {due_date})")
+
+def show_tasks():
+    if not tasks:
+        print("\nTo-Do List is empty!")
+        return
+    print("\nTo-Do List with Due Dates:")
+    for idx, (task, due_date) in enumerate(tasks, start=1):
+        print(f"{idx}. {task} - Due: {due_date}")
+
+# تست
+add_task("Finish report", datetime(2025, 2, 25))
+add_task("Prepare for meeting", datetime(2025, 3, 1))
+show_tasks()

@@ -318,4 +318,39 @@ add_task("Submit project", datetime(2025, 2, 25))
 add_task("Doctor's appointment", datetime(2025, 2, 18))
 add_task("Prepare for meeting", datetime(2025, 3, 1))
 show_tasks()
-٫امروز ک دنداریبم
+٫from datetime import datetime
+
+tasks = []
+
+def add_task(task, due_date):
+    tasks.append((task, due_date))
+    tasks.sort(key=lambda x: x[1])
+    print(f"Added: {task} (Due: {due_date})")
+
+def show_tasks():
+    if not tasks:
+        print("\nTo-Do List is empty!")
+        return
+    
+    print("\nTo-Do List (Sorted by Due Date):")
+    now = datetime.now()
+    for idx, (task, due_date) in enumerate(tasks, start=1):
+        status = "⏳ Upcoming" if due_date >= now else "❗ Overdue"
+        print(f"{idx}. {task} - Due: {due_date} ({status})")
+
+def remove_task(index):
+    if 1 <= index <= len(tasks):
+        removed_task = tasks.pop(index - 1)
+        print(f"Removed: {removed_task[0]}")
+    else:
+        print("Invalid task number!")
+
+# تست
+add_task("Submit project", datetime(2025, 2, 25))
+add_task("Doctor's appointment", datetime(2025, 2, 18))
+add_task("Prepare for meeting", datetime(2025, 3, 1))
+show_tasks()
+
+# حذف تسک شماره 2
+remove_task(2)
+show_tasks()

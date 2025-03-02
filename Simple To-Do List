@@ -405,4 +405,64 @@ show_tasks()
 
 # حذف تسک
 remove_task(1)
+show_tasks()import json
+from datetime import datetime
+
+tasks = []
+
+def add_task(task, due_date):
+    tasks.append((task, due_date.isoformat()))
+    tasks.sort(key=lambda x: x[1])
+    print(f"Added: {task} (Due: {due_date})")
+    save_tasks()
+
+def show_tasks():
+    if not tasks:
+        print("\nTo-Do List is empty!")
+        return
+    
+    print("\nTo-Do List (Sorted by Due Date):")
+    now = datetime.now()
+    for idx, (task, due_date) in enumerate(tasks, start=1):
+        due_date = datetime.fromisoformat(due_date)
+        status = "⏳ Upcoming" if due_date >= now else "❗ Overdue"
+        print(f"{idx}. {task} - Due: {due_date} ({status})")
+
+def remove_task(index):
+    if 1 <= index <= len(tasks):
+        removed_task = tasks.pop(index - 1)
+        print(f"Removed: {removed_task[0]}")
+        save_tasks()
+    else:
+        print("Invalid task number!")
+
+def edit_task(index, new_task, new_due_date):
+    if 1 <= index <= len(tasks):
+        tasks[index - 1] = (new_task, new_due_date.isoformat())
+        print(f"Task {index} updated to: {new_task} (Due: {new_due_date})")
+        save_tasks()
+    else:
+        print("Invalid task number!")
+
+def save_tasks():
+    with open("tasks.json", "w") as file:
+        json.dump(tasks, file)
+
+def load_tasks():
+    global tasks
+    try:
+        with open("tasks.json", "r") as file:
+            tasks = json.load(file)
+    except FileNotFoundError:
+        tasks = []
+
+# تست
+load_tasks()
+add_task("Submit project", datetime(2025, 2, 25))
+add_task("Doctor's appointment", datetime(2025, 2, 18))
 show_tasks()
+
+# ویرایش تسک شماره ۱
+edit_task(1, "Submit final report", datetime(2025, 2, 28))
+show_tasks()
+

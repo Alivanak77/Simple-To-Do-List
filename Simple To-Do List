@@ -690,4 +690,52 @@ edit_task(1, "Complete final project", datetime(2025, 2, 27))
 
 print("\nAfter editing:")
 show_tasks()
+import json
+from datetime import datetime
+
+tasks = []
+
+def add_task(task, due_date):
+    tasks.append((task, due_date.isoformat()))
+    tasks.sort(key=lambda x: x[1])
+    save_tasks()
+
+def show_tasks():
+    print("\nTo-Do List:")
+    for idx, (task, due_date) in enumerate(tasks, start=1):
+        due_date = datetime.fromisoformat(due_date)
+        print(f"{idx}. {task} - Due: {due_date}")
+
+def save_tasks():
+    with open("tasks.json", "w") as file:
+        json.dump(tasks, file)
+
+def load_tasks():
+    global tasks
+    try:
+        with open("tasks.json", "r") as file:
+            tasks = json.load(file)
+    except FileNotFoundError:
+        tasks = []
+
+def edit_task(task_number, new_task, new_due_date):
+    if 1 <= task_number <= len(tasks):
+        tasks[task_number - 1] = (new_task, new_due_date.isoformat())
+        save_tasks()
+        print(f"Task {task_number} updated!")
+    else:
+        print("Invalid task number.")
+
+# تست
+load_tasks()
+add_task("Complete blog post", datetime(2025, 2, 28))
+add_task("Go grocery shopping", datetime(2025, 2, 20))
+
+print("\nBefore editing:")
+show_tasks()
+
+edit_task(1, "Complete final project", datetime(2025, 2, 27))
+
+print("\nAfter editing:")
+show_tasks()
 

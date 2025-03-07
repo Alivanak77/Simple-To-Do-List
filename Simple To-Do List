@@ -738,4 +738,55 @@ edit_task(1, "Complete final project", datetime(2025, 2, 27))
 
 print("\nAfter editing:")
 show_tasks()
+import json
+import time
+import threading
+from datetime import datetime
+import winsound
+
+tasks = []
+
+def add_task(task, due_date):
+    tasks.append((task, due_date.isoformat()))
+    tasks.sort(key=lambda x: x[1])
+    save_tasks()
+
+def show_tasks():
+    print("\nTo-Do List:")
+    for idx, (task, due_date) in enumerate(tasks, start=1):
+        due_date = datetime.fromisoformat(due_date)
+        print(f"{idx}. {task} - Due: {due_date}")
+
+def save_tasks():
+    with open("tasks.json", "w") as file:
+        json.dump(tasks, file)
+
+def load_tasks():
+    global tasks
+    try:
+        with open("tasks.json", "r") as file:
+            tasks = json.load(file)
+    except FileNotFoundError:
+        tasks = []
+
+def reminder():
+    while True:
+        now = datetime.now()
+        for task, due_date in tasks:
+            if datetime.fromisoformat(due_date) <= now:
+                print(f"🔔 Reminder: {task} is due now!")
+                winsound.Beep(1000, 500)  # پخش صدای هشدار
+                tasks.remove((task, due_date))
+                save_tasks()
+        time.sleep(60)
+
+# تست
+load_tasks()
+add_task("Meeting with team", datetime(2025, 2, 28, 14, 0))
+add_task("Doctor appointment", datetime(2025, 2, 21, 9, 30))
+
+threading.Thread(target=reminder, daemon=True).start()
+
+print("\nAll Tasks:")
+show_tasks()
 

@@ -789,4 +789,47 @@ threading.Thread(target=reminder, daemon=True).start()
 
 print("\nAll Tasks:")
 show_tasks()
+import json
+from datetime import datetime
+
+tasks = []
+
+def add_task(task, due_date, priority="Medium"):
+    tasks.append({"task": task, "due_date": due_date.isoformat(), "priority": priority})
+    tasks.sort(key=lambda x: (x["priority"], x["due_date"]))
+    save_tasks()
+
+def show_tasks():
+    print("\nTo-Do List:")
+    for idx, task in enumerate(tasks, start=1):
+        due_date = datetime.fromisoformat(task["due_date"])
+        print(f"{idx}. {task['task']} - Due: {due_date} - Priority: {task['priority']}")
+
+def save_tasks():
+    with open("tasks.json", "w") as file:
+        json.dump(tasks, file)
+
+def load_tasks():
+    global tasks
+    try:
+        with open("tasks.json", "r") as file:
+            tasks = json.load(file)
+    except FileNotFoundError:
+        tasks = []
+
+def search_task(query):
+    print(f"\nSearch results for '{query}':")
+    for idx, task in enumerate(tasks, start=1):
+        if query.lower() in task["task"].lower():
+            due_date = datetime.fromisoformat(task["due_date"])
+            print(f"{idx}. {task['task']} - Due: {due_date} - Priority: {task['priority']}")
+
+# تست
+load_tasks()
+add_task("Finish report", datetime(2025, 2, 22), "High")
+add_task("Workout", datetime(2025, 2, 23), "Low")
+add_task("Buy groceries", datetime(2025, 2, 24), "Medium")
+
+show_tasks()
+search_task("report")
 

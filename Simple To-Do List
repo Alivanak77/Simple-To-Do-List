@@ -979,3 +979,60 @@ add_task("Buy groceries", datetime(2025, 2, 24), "Medium")
 show_tasks()
 mark_complete(2)
 show_tasks()
+import json
+from datetime import datetime
+
+tasks = []
+
+def add_task(task, due_date, priority="Medium", status="Incomplete"):
+    tasks.append({
+        "task": task,
+        "due_date": due_date.isoformat(),
+        "priority": priority,
+        "status": status
+    })
+    save_tasks()
+
+def show_tasks(status_filter=None):
+    print("\nTo-Do List:")
+    filtered_tasks = [t for t in tasks if status_filter is None or t["status"] == status_filter]
+    for idx, task in enumerate(filtered_tasks, start=1):
+        due_date = datetime.fromisoformat(task["due_date"])
+        print(f"{idx}. {task['task']} - Due: {due_date} - Priority: {task['priority']} - Status: {task['status']}")
+
+def save_tasks():
+    with open("tasks.json", "w") as file:
+        json.dump(tasks, file)
+
+def load_tasks():
+    global tasks
+    try:
+        with open("tasks.json", "r") as file:
+            tasks = json.load(file)
+    except FileNotFoundError:
+        tasks = []
+
+def mark_complete(task_number):
+    if 0 < task_number <= len(tasks):
+        tasks[task_number - 1]["status"] = "Complete"
+        save_tasks()
+        print(f"Task {task_number} marked as complete!")
+    else:
+        print("Invalid task number.")
+
+# تست
+load_tasks()
+add_task("Study Python", datetime(2025, 2, 28), "High")
+add_task("Read book", datetime(2025, 3, 1), "Low")
+add_task("Clean room", datetime(2025, 3, 2), "Medium")
+
+print("All tasks:")
+show_tasks()
+
+print("\nIncomplete tasks:")
+show_tasks("Incomplete")
+
+mark_complete(2)
+
+print("\nComplete tasks:")
+show_tasks("Complete")

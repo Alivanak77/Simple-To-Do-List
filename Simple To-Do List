@@ -1036,3 +1036,54 @@ mark_complete(2)
 
 print("\nComplete tasks:")
 show_tasks("Complete")
+import json
+import time
+from datetime import datetime, timedelta
+import threading
+
+tasks = []
+
+def add_task(task, due_date, priority="Medium", status="Incomplete", reminder=None):
+    task_data = {
+        "task": task,
+        "due_date": due_date.isoformat(),
+        "priority": priority,
+        "status": status,
+        "reminder": reminder.isoformat() if reminder else None
+    }
+    tasks.append(task_data)
+    save_tasks()
+    if reminder:
+        threading.Thread(target=set_reminder, args=(task, reminder)).start()
+
+def show_tasks():
+    print("\nTo-Do List:")
+    for idx, task in enumerate(tasks, start=1):
+        due_date = datetime.fromisoformat(task["due_date"])
+        reminder = datetime.fromisoformat(task["reminder"]) if task["reminder"] else "No Reminder"
+        print(f"{idx}. {task['task']} - Due: {due_date} - Priority: {task['priority']} - Status: {task['status']} - Reminder: {reminder}")
+
+def save_tasks():
+    with open("tasks.json", "w") as file:
+        json.dump(tasks, file)
+
+def load_tasks():
+    global tasks
+    try:
+        with open("tasks.json", "r") as file:
+            tasks = json.load(file)
+    except FileNotFoundError:
+        tasks = []
+
+def set_reminder(task, reminder_time):
+    reminder_dt = datetime.fromisoformat(reminder_time)
+    while datetime.now() < reminder_dt:
+        time.sleep(10)
+    print(f"⏰ Reminder: {task} is due soon!")
+
+# تست
+load_tasks()
+add_task("Meeting with team", datetime(2025, 2, 29), "High", reminder=datetime(2025, 2, 28, 18, 0))
+add_task("Submit assignment", datetime(2025, 3, 2), "Medium", reminder=datetime(2025, 3, 1, 20, 0))
+
+show_tasks()

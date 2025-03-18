@@ -1194,3 +1194,28 @@ show_tasks()
 delete_task(1)
 
 show_tasks()
+import tkinter as tk
+import math
+
+def calculate():
+    try:
+        expression = entry.get()
+        result = eval(expression, {"__builtins__": None}, 
+                      {"sin": math.sin, "cos": math.cos, "tan": math.tan, "pi": math.pi})
+        label_result.config(text=f"Result: {result}")
+    except Exception:
+        label_result.config(text="Error")
+
+root = tk.Tk()
+root.title("Scientific Calculator")
+
+entry = tk.Entry(root, width=20)
+entry.pack(pady=10)
+
+btn_calculate = tk.Button(root, text="Calculate", command=calculate)
+btn_calculate.pack(pady=5)
+
+label_result = tk.Label(root, text="Result: ")
+label_result.pack(pady=10)
+
+root.mainloop()

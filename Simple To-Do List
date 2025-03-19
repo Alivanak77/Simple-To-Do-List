@@ -1219,3 +1219,48 @@ label_result = tk.Label(root, text="Result: ")
 label_result.pack(pady=10)
 
 root.mainloop()
+import json
+from datetime import datetime
+
+tasks = []
+
+def add_task(task, due_date, priority="Medium", status="Incomplete"):
+    tasks.append({
+        "task": task,
+        "due_date": due_date.isoformat(),
+        "priority": priority,
+        "status": status
+    })
+    save_tasks()
+
+def show_tasks(only_pending=False):
+    print("\nTo-Do List:")
+    for idx, task in enumerate(tasks, start=1):
+        if only_pending and task["status"] == "Completed":
+            continue
+        due_date = datetime.fromisoformat(task["due_date"])
+        print(f"{idx}. {task['task']} - Due: {due_date} - Priority: {task['priority']} - Status: {task['status']}")
+
+def save_tasks():
+    with open("tasks.json", "w") as file:
+        json.dump(tasks, file)
+
+def load_tasks():
+    global tasks
+    try:
+        with open("tasks.json", "r") as file:
+            tasks = json.load(file)
+    except FileNotFoundError:
+        tasks = []
+
+# تست
+load_tasks()
+add_task("Go to gym", datetime(2025, 3, 1), "High")
+add_task("Buy groceries", datetime(2025, 3, 2), "Medium")
+add_task("Read a book", datetime(2025, 3, 3), "Low", "Completed")
+
+print("\nتمام تسک‌ها:")
+show_tasks()
+
+print("\nفقط تسک‌های انجام نشده:")
+show_tasks(only_pending=True)

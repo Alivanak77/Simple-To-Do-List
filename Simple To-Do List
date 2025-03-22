@@ -1309,3 +1309,57 @@ show_tasks()
 
 print("\nجستجوی تسک‌های شامل 'book':")
 show_tasks("book")
+import json
+from datetime import datetime
+
+tasks = []
+
+def add_task(task, due_date, priority="Medium", status="Incomplete"):
+    tasks.append({
+        "task": task,
+        "due_date": due_date.isoformat(),
+        "priority": priority,
+        "status": status
+    })
+    save_tasks()
+
+def show_tasks():
+    print("\nTo-Do List:")
+    for idx, task in enumerate(tasks, start=1):
+        due_date = datetime.fromisoformat(task["due_date"])
+        print(f"{idx}. {task['task']} - Due: {due_date} - Priority: {task['priority']} - Status: {task['status']}")
+
+def delete_task(index):
+    if 0 <= index < len(tasks):
+        removed_task = tasks.pop(index)
+        print(f"Deleted: {removed_task['task']}")
+        save_tasks()
+    else:
+        print("Invalid index")
+
+def save_tasks():
+    with open("tasks.json", "w") as file:
+        json.dump(tasks, file)
+
+def load_tasks():
+    global tasks
+    try:
+        with open("tasks.json", "r") as file:
+            tasks = json.load(file)
+    except FileNotFoundError:
+        tasks = []
+
+# تست
+load_tasks()
+add_task("Go to gym", datetime(2025, 3, 1), "High")
+add_task("Buy groceries", datetime(2025, 3, 2), "Medium")
+add_task("Read a book", datetime(2025, 3, 3), "Low")
+
+print("\nهمه تسک‌ها:")
+show_tasks()
+
+print("\nحذف تسک دوم:")
+delete_task(1)
+
+print("\nلیست بعد از حذف:")
+show_tasks()

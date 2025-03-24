@@ -1418,3 +1418,61 @@ mark_done(1)
 
 print("\nلیست بعد از تغییر:")
 show_tasks()
+import json
+import time
+import threading
+from datetime import datetime, timedelta
+
+tasks = []
+
+def add_task(task, due_date, priority="Medium", status="Incomplete", reminder_minutes=None):
+    task_data = {
+        "task": task,
+        "due_date": due_date.isoformat(),
+        "priority": priority,
+        "status": status
+    }
+    
+    if reminder_minutes:
+        task_data["reminder_time"] = (datetime.now() + timedelta(minutes=reminder_minutes)).isoformat()
+    
+    tasks.append(task_data)
+    save_tasks()
+
+def check_reminders():
+    while True:
+        now = datetime.now()
+        for task in tasks:
+            if "reminder_time" in task and datetime.fromisoformat(task["reminder_time"]) <= now:
+                print(f"⏰ Reminder: {task['task']} is due soon!")
+                task.pop("reminder_time")
+                save_tasks()
+        time.sleep(30)
+
+def show_tasks():
+    print("\nTo-Do List:")
+    for idx, task in enumerate(tasks, start=1):
+        due_date = datetime.fromisoformat(task["due_date"])
+        status_icon = "✅" if task["status"] == "Completed" else "❌"
+        print(f"{idx}. {task['task']} - Due: {due_date} - Priority: {task['priority']} - Status: {status_icon}")
+
+def save_tasks():
+    with open("tasks.json", "w") as file:
+        json.dump(tasks, file)
+
+def load_tasks():
+    global tasks
+    try:
+        with open("tasks.json", "r") as file:
+            tasks = json.load(file)
+    except FileNotFoundError:
+        tasks = []
+
+# اجرای سیستم یادآوری در یک رشته جداگانه
+load_tasks()
+reminder_thread = threading.Thread(target=check_reminders, daemon=True)
+reminder_thread.start()
+
+# تست
+add_task("Prepare report", datetime(2025, 3, 5), "High", reminder_minutes=1)
+show_tasks()

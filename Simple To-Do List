@@ -1572,3 +1572,50 @@ add_task("Go to gym", datetime(2025, 3, 8), "Medium")
 
 sort_tasks()
 show_tasks()
+import json
+from datetime import datetime
+
+tasks = []
+
+def add_task(task, due_date, priority="Medium", status="Incomplete"):
+    tasks.append({
+        "task": task,
+        "due_date": due_date.isoformat(),
+        "priority": priority,
+        "status": status
+    })
+    save_tasks()
+
+def remove_task(index):
+    if 0 <= index < len(tasks):
+        removed_task = tasks.pop(index)
+        print(f"Deleted task: {removed_task['task']}")
+        save_tasks()
+    else:
+        print("Invalid task number!")
+
+def show_tasks():
+    print("\nTo-Do List:")
+    for idx, task in enumerate(tasks, start=1):
+        due_date = datetime.fromisoformat(task["due_date"])
+        status_icon = "✅" if task["status"] == "Completed" else "❌"
+        print(f"{idx}. {task['task']} - Due: {due_date} - Priority: {task['priority']} - Status: {status_icon}")
+
+def save_tasks():
+    with open("tasks.json", "w") as file:
+        json.dump(tasks, file)
+
+def load_tasks():
+    global tasks
+    try:
+        with open("tasks.json", "r") as file:
+            tasks = json.load(file)
+    except FileNotFoundError:
+        tasks = []
+
+# تست
+load_tasks()
+show_tasks()
+task_number = int(input("Enter task number to delete: ")) - 1
+remove_task(task_number)
+show_tasks()

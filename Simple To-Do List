@@ -1667,3 +1667,60 @@ if results:
     show_tasks(results)
 else:
     print("No matching tasks found.")
+import json
+from datetime import datetime
+
+tasks = []
+
+def add_task(task, due_date, priority="Medium", status="Incomplete"):
+    tasks.append({
+        "task": task,
+        "due_date": due_date.isoformat(),
+        "priority": priority,
+        "status": status
+    })
+    save_tasks()
+
+def edit_task(index, new_task=None, new_due_date=None, new_priority=None, new_status=None):
+    if 0 <= index < len(tasks):
+        if new_task:
+            tasks[index]["task"] = new_task
+        if new_due_date:
+            tasks[index]["due_date"] = new_due_date.isoformat()
+        if new_priority:
+            tasks[index]["priority"] = new_priority
+        if new_status:
+            tasks[index]["status"] = new_status
+        
+        save_tasks()
+        print("Task updated successfully!")
+    else:
+        print("Invalid task number!")
+
+def show_tasks():
+    print("\nTo-Do List:")
+    for idx, task in enumerate(tasks, start=1):
+        due_date = datetime.fromisoformat(task["due_date"])
+        status_icon = "✅" if task["status"] == "Completed" else "❌"
+        print(f"{idx}. {task['task']} - Due: {due_date} - Priority: {task['priority']} - Status: {status_icon}")
+
+def save_tasks():
+    with open("tasks.json", "w") as file:
+        json.dump(tasks, file)
+
+def load_tasks():
+    global tasks
+    try:
+        with open("tasks.json", "r") as file:
+            tasks = json.load(file)
+    except FileNotFoundError:
+        tasks = []
+
+# تست
+load_tasks()
+show_tasks()
+task_number = int(input("Enter task number to edit: ")) - 1
+new_task = input("Enter new task description (leave empty to keep the same): ") or None
+new_priority = input("Enter new priority (High, Medium, Low) (leave empty to keep the same): ") or None
+edit_task(task_number, new_task=new_task, new_priority=new_priority)
+show_tasks()
